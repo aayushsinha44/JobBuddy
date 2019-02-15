@@ -1,8 +1,8 @@
-from user.models import RecruiterModel
+from user.models import CandidateModel
 from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS
 
 
-class Recruiter:
+class Candidate:
 
     def __init__(self, user_id=None):
         self.user_id = user_id
@@ -17,43 +17,43 @@ class Recruiter:
                "phone_number": "9876543210",
                "password": "adlbc",
                "type": "recruiter",
-               "company": "abc",
-               "pan": "4376RG4"
+               "location": "abc",
+               "cv": "url"
            }
            :return: message
         """
 
         # Check the input structure
-        if not Recruiter.check_user_structure(user_structure):
+        if not Candidate.check_user_structure(user_structure):
             return INVALID_USER_ATTRIBUTES
 
         # Check whether user exists or not
-        if RecruiterModel.objects.filter(email_id=user_structure["email"],
+        if CandidateModel.objects.filter(email_id=user_structure["email"],
                                          phone_number=user_structure["phone_number"]).count() > 0:
             return USER_EXISTS
 
         # Add user
-        RecruiterModel.objects.create(first_name=user_structure["first_name"],
+        CandidateModel.objects.create(first_name=user_structure["first_name"],
                                       last_name=user_structure["last_name"],
                                       email_id=user_structure["email_id"],
                                       phone_number=user_structure["phone_number"],
                                       password=user_structure["password"],
                                       type=user_structure["type"],
-                                      company=user_structure["company"],
-                                      pan=user_structure["pan"])
+                                      location=user_structure["company"],
+                                      cv=user_structure["cv"])
 
         return USER_ADDED_SUCCESS
 
     @staticmethod
     def check_user_structure(user_structure):
-        recruiter_user_structure = ["first_name",
+        candidate_user_structure = ["first_name",
                                     "last_name",
                                     "email_id",
                                     "password",
                                     "type",
-                                    "company",
-                                    "pan"]
-        for val in recruiter_user_structure:
+                                    "location",
+                                    "cv"]
+        for val in candidate_user_structure:
             if val not in user_structure:
                 return False
         return True

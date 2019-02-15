@@ -2,16 +2,9 @@ from django.db import models
 
 
 # Create your models here.
-class Company(models.Model):
-    # TODO Complete this
-    SECTOR = (
-        ('IT', 'Information Technology'),
-        ('TRAVEL', 'Travel and Tourism'),
-        ('FN', 'Finance')
-    )
-
+class CompanyModel(models.Model):
     name = models.CharField(max_length=100)
-    sector = models.CharField(max_length=100, choices=SECTOR)
+    sector = models.CharField(max_length=100)
     website = models.CharField(max_length=100)
     about = models.TextField()
 
@@ -19,7 +12,7 @@ class Company(models.Model):
         return self.name
 
 
-class User(models.Model):
+class UserModel(models.Model):
     user_id = models.AutoField(primary_key=True)
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
@@ -31,15 +24,15 @@ class User(models.Model):
         abstract = True
 
 
-class Recruiter(User):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+class RecruiterModel(UserModel):
+    company = models.ForeignKey(CompanyModel, on_delete=models.CASCADE)
     pan = models.CharField(max_length=100)
 
     def __str__(self):
         return self.user_id
 
 
-class Freelancer(User):
+class FreelancerModel(UserModel):
     pan = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
 
@@ -47,8 +40,8 @@ class Freelancer(User):
         return self.user_id
 
 
-class FreelancerQualification(models.Model):
-    user = models.ForeignKey(Freelancer, on_delete=models.CASCADE)
+class FreelancerQualificationModel(models.Model):
+    user = models.ForeignKey(FreelancerModel, on_delete=models.CASCADE)
     institute_name = models.CharField(max_length=100)
     percentage = models.CharField(max_length=10)
     start_date = models.CharField(max_length=10)
@@ -58,7 +51,7 @@ class FreelancerQualification(models.Model):
         return str(self.id)
 
 
-class Candidate(User):
+class CandidateModel(UserModel):
     location = models.CharField(max_length=100)
     cv = models.CharField(max_length=255)  # Uploaded CV URL
 
@@ -66,8 +59,8 @@ class Candidate(User):
         return self.user_id
 
 
-class CandidateWorkExperience(models.Model):
-    user = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+class CandidateWorkExperienceModel(models.Model):
+    user = models.ForeignKey(CandidateModel, on_delete=models.CASCADE)
     company_name = models.CharField(max_length=100)
     post = models.CharField(max_length=10)
     location = models.CharField(max_length=10)
@@ -80,8 +73,8 @@ class CandidateWorkExperience(models.Model):
         return str(self.id)
 
 
-class CandidateQualification(models.Model):
-    user = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+class CandidateQualificationModel(models.Model):
+    user = models.ForeignKey(CandidateModel, on_delete=models.CASCADE)
     institute_name = models.CharField(max_length=100)
     percentage = models.CharField(max_length=10)
     start_date = models.CharField(max_length=10)
