@@ -1,5 +1,6 @@
 from user.models import CandidateModel
 from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS
+from user.helper.helper import process_password
 
 
 class Candidate:
@@ -28,7 +29,7 @@ class Candidate:
             return INVALID_USER_ATTRIBUTES
 
         # Check whether user exists or not
-        if CandidateModel.objects.filter(email_id=user_structure["email"],
+        if CandidateModel.objects.filter(email_id=user_structure["email_id"],
                                          phone_number=user_structure["phone_number"]).count() > 0:
             return USER_EXISTS
 
@@ -37,9 +38,8 @@ class Candidate:
                                       last_name=user_structure["last_name"],
                                       email_id=user_structure["email_id"],
                                       phone_number=user_structure["phone_number"],
-                                      password=user_structure["password"],
-                                      type=user_structure["type"],
-                                      location=user_structure["company"],
+                                      password=process_password(user_structure["password"]),
+                                      location=user_structure["location"],
                                       cv=user_structure["cv"])
 
         return USER_ADDED_SUCCESS

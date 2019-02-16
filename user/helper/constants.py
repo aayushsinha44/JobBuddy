@@ -6,6 +6,7 @@ INVALID_USER_ATTRIBUTES="Invalid user attributes"
 COMPANY_EXISTS="company exists"
 COMPANY_ADDED_SUCCESS="company added successfully"
 INVALID_COMPANY_ATTRIBUTES="invalid company attributes"
+COMPANY_DOESNOT_EXISTS="company doesnot exists"
 
 TOKEN_EXPIRY_DAYS=30 # 30 days
 TOKEN_EXPIRED="token expired"

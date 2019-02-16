@@ -45,3 +45,4 @@ class User:
         if user_type in ["recruiter", "freelancer", "candidate"]:
             return True
         return False
+

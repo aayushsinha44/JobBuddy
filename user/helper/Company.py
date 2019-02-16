@@ -53,3 +53,7 @@ class Company:
                 return False
         return True
 
+    @staticmethod
+    def get_company_list():
+        pass
+

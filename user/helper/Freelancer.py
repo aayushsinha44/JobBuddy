@@ -1,5 +1,6 @@
 from user.models import FreelancerModel
 from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS
+from user.helper.helper import process_password
 
 
 class Freelancer:
@@ -28,7 +29,7 @@ class Freelancer:
             return INVALID_USER_ATTRIBUTES
 
         # Check whether user exists or not
-        if FreelancerModel.objects.filter(email_id=user_structure["email"],
+        if FreelancerModel.objects.filter(email_id=user_structure["email_id"],
                                           phone_number=user_structure["phone_number"]).count() > 0:
             return USER_EXISTS
 
@@ -37,8 +38,7 @@ class Freelancer:
                                        last_name=user_structure["last_name"],
                                        email_id=user_structure["email_id"],
                                        phone_number=user_structure["phone_number"],
-                                       password=user_structure["password"],
-                                       type=user_structure["type"],
+                                       password=process_password(user_structure["password"]),
                                        location=user_structure["location"],
                                        pan=user_structure["pan"])
 

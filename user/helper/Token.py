@@ -1,5 +1,6 @@
 from datetime import date, datetime
-from user.helper.constants import TOKEN_EXPIRY_DAYS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED
+from user.helper.constants import TOKEN_EXPIRY_DAYS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED, INVALID_USER_TYPE
+from user.helper.User import User
 import jwt
 import random
 import string
@@ -49,10 +50,12 @@ def check_token(token):
         return INVALID_TOKEN
 
 
-def create_token(email, type):
+def create_token(email, user_type):
+    if not User.check_user(user_type):
+        return INVALID_USER_TYPE
     token = jwt.encode({'email': email,
                         'date': str(date.today()),
-                        'type': type}, get_secret_key(), algorithm='HS256')
+                        'type': user_type}, get_secret_key(), algorithm='HS256')
     token = token.decode()
     return token
 

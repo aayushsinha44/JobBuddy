@@ -29,7 +29,7 @@ class RecruiterModel(UserModel):
     pan = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.user_id
+        return str(self.user_id)
 
 
 class FreelancerModel(UserModel):
@@ -37,7 +37,7 @@ class FreelancerModel(UserModel):
     location = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.user_id
+        return str(self.user_id)
 
 
 class FreelancerQualificationModel(models.Model):
@@ -52,11 +52,11 @@ class FreelancerQualificationModel(models.Model):
 
 
 class CandidateModel(UserModel):
-    location = models.CharField(max_length=100)
-    cv = models.CharField(max_length=255)  # Uploaded CV URL
+    location = models.CharField(max_length=100, blank=True, null=True)
+    cv = models.CharField(max_length=255, blank=True, null=True)  # Uploaded CV URL
 
     def __str__(self):
-        return self.user_id
+        return str(self.user_id)
 
 
 class CandidateWorkExperienceModel(models.Model):
@@ -64,7 +64,7 @@ class CandidateWorkExperienceModel(models.Model):
     company_name = models.CharField(max_length=100)
     post = models.CharField(max_length=10)
     location = models.CharField(max_length=10)
-    job_description = models.TextField()
+    job_description = models.TextField(blank=True, null=True)
     start_date = models.CharField(max_length=10)
     is_currently_working_here = models.BooleanField()
     end_date = models.CharField(max_length=10, blank=True, null=True)

@@ -1,5 +1,6 @@
-from user.models import RecruiterModel
-from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS
+from user.helper.helper import process_password
+from user.models import RecruiterModel, CompanyModel
+from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, COMPANY_DOESNOT_EXISTS
 
 
 class Recruiter:
@@ -17,7 +18,7 @@ class Recruiter:
                "phone_number": "9876543210",
                "password": "adlbc",
                "type": "recruiter",
-               "company": "abc",
+               "company": "214", # Company id
                "pan": "4376RG4"
            }
            :return: message
@@ -28,21 +29,31 @@ class Recruiter:
             return INVALID_USER_ATTRIBUTES
 
         # Check whether user exists or not
-        if RecruiterModel.objects.filter(email_id=user_structure["email"],
+        if RecruiterModel.objects.filter(email_id=user_structure["email_id"],
                                          phone_number=user_structure["phone_number"]).count() > 0:
             return USER_EXISTS
+
+        # Check whether company exists or not
+        if not Recruiter.check_company(user_structure["company"]):
+            return COMPANY_DOESNOT_EXISTS
 
         # Add user
         RecruiterModel.objects.create(first_name=user_structure["first_name"],
                                       last_name=user_structure["last_name"],
                                       email_id=user_structure["email_id"],
                                       phone_number=user_structure["phone_number"],
-                                      password=user_structure["password"],
-                                      type=user_structure["type"],
-                                      company=user_structure["company"],
+                                      password=process_password(user_structure["password"]),
+                                      company=CompanyModel.objects.get(id=user_structure["company"]),
                                       pan=user_structure["pan"])
 
         return USER_ADDED_SUCCESS
+
+    @staticmethod
+    def check_company(company_id):
+
+        if CompanyModel.objects.filter(id=company_id).count() == 0:
+            return False
+        return True
 
     @staticmethod
     def check_user_structure(user_structure):
