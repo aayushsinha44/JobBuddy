@@ -11,7 +11,7 @@ class TokenCreationAndValidationTest(TestCase):
         self.email = "a@test1.com"
         self.type = "candidate"
         self.token = create_token(self.email, self.type)
-        self.expired_token = jwt.encode({'email': self.email,
+        self.expired_token = jwt.encode({'data': self.email,
                                          'date': '2011-01-01',
                                          'type': self.type}, get_secret_key(),
                                         algorithm='HS256').decode()
@@ -87,3 +87,5 @@ class FreelancerCreationTest(TestCase):
         res = User.createUser(self.user_structure)
         self.assertEqual(res, USER_ADDED_SUCCESS)
 
+# TODO login test
+# TODO create user login

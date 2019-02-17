@@ -1,5 +1,5 @@
-from user.models import FreelancerModel
-from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS
+from user.models import FreelancerModel, FreelancerQualificationModel
+from user.helper.constants import EMAIL_EXISTS, PHONE_NUMBER, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_EXISTS, USER_DOESNOT_EXISTS
 from user.helper.helper import process_password
 
 
@@ -7,6 +7,12 @@ class Freelancer:
 
     def __init__(self, user_id=None):
         self.user_id = user_id
+        self.user_status = self.check_user_status()
+
+    def check_user_status(self):
+        if Freelancer.objects.filter(user_id=self.user_id).count == 0:
+            return USER_DOESNOT_EXISTS
+        return USER_EXISTS
 
     @staticmethod
     def create_user(user_structure):
@@ -29,9 +35,11 @@ class Freelancer:
             return INVALID_USER_ATTRIBUTES
 
         # Check whether user exists or not
-        if FreelancerModel.objects.filter(email_id=user_structure["email_id"],
-                                          phone_number=user_structure["phone_number"]).count() > 0:
-            return USER_EXISTS
+        if FreelancerModel.objects.filter(email_id=user_structure["email_id"]).count() > 0:
+            return EMAIL_EXISTS
+
+        if FreelancerModel.objects.filter(email_id=user_structure["phone_number"]).count() > 0:
+            return PHONE_NUMBER
 
         # Add user
         FreelancerModel.objects.create(first_name=user_structure["first_name"],
@@ -57,3 +65,39 @@ class Freelancer:
             if val not in user_structure:
                 return False
         return True
+
+    @staticmethod
+    def check_freelancer(email_id=None, password=None):
+
+        if FreelancerModel.objects.filter(email_id=email_id,
+                                          password=password).count() > 0:
+            return USER_EXISTS
+        return USER_DOESNOT_EXISTS
+
+    @staticmethod
+    def check_freelancer(phone_number=None, password=None):
+
+        if FreelancerModel.objects.filter(phone_number=phone_number,
+                                          password=password).count() > 0:
+            return USER_EXISTS
+        return USER_DOESNOT_EXISTS
+
+    @staticmethod
+    def get_id_from_phone_number(phone_number):
+
+        return list(FreelancerModel.objects.filter(phone_number=phone_number).values())[0]["user_id"]
+
+    @staticmethod
+    def get_id_from_email(email_id):
+
+        return list(FreelancerModel.objects.filter(email_id=email_id).values())[0]["user_id"]
+
+    def get_details(self):
+
+        if self.user_status == USER_DOESNOT_EXISTS:
+            return USER_DOESNOT_EXISTS
+
+        basic = list(Freelancer.objects.filter(user_id=self.user_id).values())[0]
+        basic["qualification"] = list(FreelancerQualificationModel.objects.filter(
+            user=FreelancerModel.objects.get(user_id=self.user_id)))
+        return basic

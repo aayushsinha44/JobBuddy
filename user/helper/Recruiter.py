@@ -1,12 +1,19 @@
 from user.helper.helper import process_password
 from user.models import RecruiterModel, CompanyModel
-from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, COMPANY_DOESNOT_EXISTS
+from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, COMPANY_DOESNOT_EXISTS, \
+    USER_DOESNOT_EXISTS
 
 
 class Recruiter:
 
     def __init__(self, user_id=None):
         self.user_id = user_id
+        self.user_status = self.check_user_status()
+
+    def check_user_status(self):
+        if Recruiter.objects.filter(user_id=self.user_id).count == 0:
+            return USER_DOESNOT_EXISTS
+        return USER_EXISTS
 
     @staticmethod
     def create_user(user_structure):
@@ -68,3 +75,39 @@ class Recruiter:
             if val not in user_structure:
                 return False
         return True
+
+    @staticmethod
+    def check_recruiter(email_id=None, password=None):
+
+        if RecruiterModel.objects.filter(email_id=email_id,
+                                          password=password).count() > 0:
+            return USER_EXISTS
+        return USER_DOESNOT_EXISTS
+
+    @staticmethod
+    def check_recruiter(phone_number=None, password=None):
+
+        if RecruiterModel.objects.filter(phone_number=phone_number,
+                                          password=password).count() > 0:
+            return USER_EXISTS
+        return USER_DOESNOT_EXISTS
+
+    @staticmethod
+    def get_id_from_phone_number(phone_number):
+
+        return list(RecruiterModel.objects.filter(phone_number=phone_number).values())[0]["user_id"]
+
+    @staticmethod
+    def get_id_from_email(email_id):
+
+        return list(RecruiterModel.objects.filter(email_id=email_id).values())[0]["user_id"]
+
+    def get_details(self):
+
+        if self.user_status == USER_DOESNOT_EXISTS:
+            return USER_DOESNOT_EXISTS
+
+        basic = list(RecruiterModel.objects.filter(user_id=self.user_id).values())[0]
+        basic["company"] = list(CompanyModel.objects.filter(id=basic["company"]))[0]
+        return basic
+

@@ -11,11 +11,11 @@ class Token:
     def __init__(self, request):
         self.request = request
 
-    def get_email(self):
+    def get_user_id(self):
         try:
             token = self.request.META['HTTP_TOKEN']
             jwt_string = jwt.decode(token, Token.get_secret_key(), algorithms=['HS256'])
-            email = jwt_string["email"]
+            email = jwt_string["data"]
             return email
         except:
             return INVALID_TOKEN
@@ -50,10 +50,10 @@ def check_token(token):
         return INVALID_TOKEN
 
 
-def create_token(email, user_type):
+def create_token(data, user_type):
     if not User.check_user(user_type):
         return INVALID_USER_TYPE
-    token = jwt.encode({'email': email,
+    token = jwt.encode({'data': data,
                         'date': str(date.today()),
                         'type': user_type}, get_secret_key(), algorithm='HS256')
     token = token.decode()
