@@ -25,7 +25,7 @@ SECRET_KEY = 'pf4ckanj+v2llwj=@m7+n5_d67cso75+eftpp6p0u$76tms%+%'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user',
+    'jobs',
+    'inmail'
 ]
 
 MIDDLEWARE = [

@@ -7,6 +7,7 @@ PHONE_NUMBER="phone number in use"
 USER_DOESNOT_EXISTS: str="User doesnot exists"
 INVALID_ATTRIBUTES: str="invalid attributes"
 INVALID_PHONE_NUMBER="invalid phone number"
+USER_UPDATE_SUCCESS="user information successfully updated"
 
 COMPANY_EXISTS="company exists"
 COMPANY_ADDED_SUCCESS="company added successfully"

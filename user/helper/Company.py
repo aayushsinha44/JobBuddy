@@ -1,5 +1,5 @@
 from user.models import CompanyModel
-from user.helper.constants import COMPANY_EXISTS, COMPANY_ADDED_SUCCESS, INVALID_COMPANY_ATTRIBUTES
+from user.helper.constants import COMPANY_EXISTS, COMPANY_ADDED_SUCCESS, INVALID_COMPANY_ATTRIBUTES, COMPANY_DOESNOT_EXISTS
 
 
 class Company:
@@ -52,6 +52,16 @@ class Company:
             if val not in company_structure:
                 return False
         return True
+
+    def check_company(self):
+
+        if CompanyModel.objects.filter(id=self.company_id).count() == 0:
+            return COMPANY_DOESNOT_EXISTS
+
+        return COMPANY_EXISTS
+
+    def get_company_object(self):
+        return CompanyModel.objects.get(id=self.company_id)
 
     @staticmethod
     def get_company_list():

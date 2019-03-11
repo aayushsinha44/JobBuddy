@@ -10,7 +10,7 @@ def register(request):
 
     if request.method == 'POST':
         user_structure = json.loads(request.body.decode())
-        print (user_structure)
+
         res = User.createUser(user_structure)
 
         if res == USER_ADDED_SUCCESS:

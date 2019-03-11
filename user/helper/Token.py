@@ -14,7 +14,7 @@ class Token:
     def get_user_id(self):
         try:
             token = self.request.META['HTTP_TOKEN']
-            jwt_string = jwt.decode(token, Token.get_secret_key(), algorithms=['HS256'])
+            jwt_string = jwt.decode(token, "asfjoew@23r8wjfosdfn", algorithms=['HS256'])
             email = jwt_string["data"]
             return email
         except:
@@ -23,7 +23,7 @@ class Token:
     def get_user_type(self):
         try:
             token = self.request.META['HTTP_TOKEN']
-            jwt_string = jwt.decode(token, Token.get_secret_key(), algorithms=['HS256'])
+            jwt_string = jwt.decode(token, "asfjoew@23r8wjfosdfn", algorithms=['HS256'])
             user_type = jwt_string["type"]
             return user_type
         except:
@@ -37,7 +37,7 @@ def calculate_day_difference(token_date):
 
 def check_token(token):
     try:
-        jwt_string = jwt.decode(token, get_secret_key(), algorithms=['HS256'])
+        jwt_string = jwt.decode(token, 'asfjoew@23r8wjfosdfn', algorithms=['HS256'])
         # email = jwt_string["email"]
         date_login = jwt_string["date"]
         date_login = datetime.strptime(date_login, '%Y-%m-%d').date()
@@ -55,7 +55,7 @@ def create_token(data, user_type):
         return INVALID_USER_TYPE
     token = jwt.encode({'data': data,
                         'date': str(date.today()),
-                        'type': user_type}, get_secret_key(), algorithm='HS256')
+                        'type': user_type}, 'asfjoew@23r8wjfosdfn', algorithm='HS256')
     token = token.decode()
     return token
 

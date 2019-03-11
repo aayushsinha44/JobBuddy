@@ -101,4 +101,9 @@ class Candidate:
             user=CandidateModel.objects.get(user_id=self.user_id)))
         basic["work"] = list(CandidateWorkExperienceModel.objects.filter(
             user=CandidateModel.objects.get(user_id=self.user_id)))
+        del basic["password"]
         return basic
+
+    def update_details(self, details):
+
+        pass

@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from user.helper.Token import create_token, check_token, get_secret_key
 from user.helper.constants import USER_ADDED_SUCCESS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED
 import jwt
@@ -13,7 +13,7 @@ class TokenCreationAndValidationTest(TestCase):
         self.token = create_token(self.email, self.type)
         self.expired_token = jwt.encode({'data': self.email,
                                          'date': '2011-01-01',
-                                         'type': self.type}, get_secret_key(),
+                                         'type': self.type}, 'asfjoew@23r8wjfosdfn',
                                         algorithm='HS256').decode()
 
     def test_token(self):
@@ -72,6 +72,7 @@ class RecruiterCreationTest(TestCase):
 
 class FreelancerCreationTest(TestCase):
     def setUp(self):
+        CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
         self.user_structure = {
             "first_name": "Aayush",
             "last_name": "Sinha",
@@ -80,7 +81,8 @@ class FreelancerCreationTest(TestCase):
             "password": "abc1234",
             "type": "freelancer",
             "pan": "123",
-            "location": ""
+            "location": "",
+            "company": "1"
         }
 
     def test_recruiter(self):
@@ -89,3 +91,5 @@ class FreelancerCreationTest(TestCase):
 
 # TODO login test
 # TODO create user login
+
+

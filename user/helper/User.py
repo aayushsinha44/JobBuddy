@@ -112,7 +112,7 @@ class User:
 
     @staticmethod
     def get_id_from_phone_number(phone_number, user_type):
-        if not  User.check_user_structure(user_type):
+        if not User.check_user_structure(user_type):
             return INVALID_USER_TYPE
 
         if user_type == RECRUITER:
@@ -140,7 +140,7 @@ class User:
 
     def get_details(self):
 
-        if not  User.check_user_structure(self.user_type):
+        if not User.check_user_structure(self.user_type):
             return INVALID_USER_TYPE
 
         if self.user_type == RECRUITER:
@@ -154,3 +154,20 @@ class User:
         elif self.user_type == CANDIDATE:
             candidate = Candidate(self._user_id)
             return candidate.get_details()
+
+    def update_details(self, details):
+
+        if not User.check_phone_number(self.user_type):
+            return INVALID_USER_TYPE
+
+        if self.user_type == RECRUITER:
+            recruiter = Recruiter(self._user_id)
+            return recruiter.update_details(details)
+
+        elif self.user_type == FREELANCER:
+            freelancer = Freelancer(self._user_id)
+            return freelancer.update_details(details)
+
+        elif self.user_type == CANDIDATE:
+            candidate = Candidate(self._user_id)
+            return candidate.get_details(details)

@@ -1,6 +1,8 @@
-from user.models import FreelancerModel, FreelancerQualificationModel
-from user.helper.constants import EMAIL_EXISTS, PHONE_NUMBER, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_EXISTS, USER_DOESNOT_EXISTS
+from user.models import FreelancerModel, FreelancerQualificationModel, CompanyModel
+from user.helper.constants import EMAIL_EXISTS, PHONE_NUMBER, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_EXISTS, \
+                                    USER_DOESNOT_EXISTS, COMPANY_DOESNOT_EXISTS
 from user.helper.helper import process_password
+from user.helper.Company import Company
 
 
 class Freelancer:
@@ -25,7 +27,8 @@ class Freelancer:
                "password": "adlbc",
                "type": "recruiter",
                "location": "abc",
-               "pan": "4376RG4"
+               "pan": "4376RG4",
+               "company" : "1"
            }
            :return: message
         """
@@ -41,6 +44,11 @@ class Freelancer:
         if FreelancerModel.objects.filter(email_id=user_structure["phone_number"]).count() > 0:
             return PHONE_NUMBER
 
+        company_object = Company(user_structure["company"])
+
+        if company_object.check_company() == COMPANY_DOESNOT_EXISTS:
+            return COMPANY_DOESNOT_EXISTS
+
         # Add user
         FreelancerModel.objects.create(first_name=user_structure["first_name"],
                                        last_name=user_structure["last_name"],
@@ -48,7 +56,8 @@ class Freelancer:
                                        phone_number=user_structure["phone_number"],
                                        password=process_password(user_structure["password"]),
                                        location=user_structure["location"],
-                                       pan=user_structure["pan"])
+                                       pan=user_structure["pan"],
+                                       company=company_object.get_company_object())
 
         return USER_ADDED_SUCCESS
 
@@ -60,7 +69,8 @@ class Freelancer:
                                      "password",
                                      "type",
                                      "location",
-                                     "pan"]
+                                     "pan",
+                                     "company"]
         for val in freelancer_user_structure:
             if val not in user_structure:
                 return False
@@ -100,4 +110,9 @@ class Freelancer:
         basic = list(Freelancer.objects.filter(user_id=self.user_id).values())[0]
         basic["qualification"] = list(FreelancerQualificationModel.objects.filter(
             user=FreelancerModel.objects.get(user_id=self.user_id)))
+        del basic["password"]
         return basic
+
+    def update_details(self, details):
+
+        pass

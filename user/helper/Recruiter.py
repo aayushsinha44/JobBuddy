@@ -80,7 +80,7 @@ class Recruiter:
     def check_recruiter(email_id=None, password=None):
 
         if RecruiterModel.objects.filter(email_id=email_id,
-                                          password=password).count() > 0:
+                                         password=password).count() > 0:
             return USER_EXISTS
         return USER_DOESNOT_EXISTS
 
@@ -88,7 +88,7 @@ class Recruiter:
     def check_recruiter(phone_number=None, password=None):
 
         if RecruiterModel.objects.filter(phone_number=phone_number,
-                                          password=password).count() > 0:
+                                         password=password).count() > 0:
             return USER_EXISTS
         return USER_DOESNOT_EXISTS
 
@@ -109,5 +109,13 @@ class Recruiter:
 
         basic = list(RecruiterModel.objects.filter(user_id=self.user_id).values())[0]
         basic["company"] = list(CompanyModel.objects.filter(id=basic["company"]))[0]
+        del basic["password"]
         return basic
 
+    def update_details(self, details):
+
+        pass
+
+    def check_details_structure(self, details):
+
+        passe

@@ -35,11 +35,13 @@ class RecruiterModel(UserModel):
 class FreelancerModel(UserModel):
     pan = models.CharField(max_length=100)
     location = models.CharField(max_length=100)
+    company = models.ForeignKey(CompanyModel, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.user_id)
 
 
+# TODO Not required
 class FreelancerQualificationModel(models.Model):
     user = models.ForeignKey(FreelancerModel, on_delete=models.CASCADE)
     institute_name = models.CharField(max_length=100)
@@ -68,6 +70,8 @@ class CandidateWorkExperienceModel(models.Model):
     start_date = models.CharField(max_length=10)
     is_currently_working_here = models.BooleanField()
     end_date = models.CharField(max_length=10, blank=True, null=True)
+
+    # TODO Company Sector for relevant experience
 
     def __str__(self):
         return str(self.id)

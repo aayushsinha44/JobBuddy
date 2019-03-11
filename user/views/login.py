@@ -20,7 +20,7 @@ def login(request):
             else:
                 data = User.get_id_from_email(res["email_id"], res["type"])
 
-            token = create_token(data, res["password"])
+            token = create_token(data, res["type"])
 
             return HttpResponse(json.dumps({"status": "success",
                                             "token": token}), content_type='application_json')
