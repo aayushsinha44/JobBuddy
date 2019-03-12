@@ -9,6 +9,7 @@ INVALID_ATTRIBUTES: str="invalid attributes"
 INVALID_PHONE_NUMBER="invalid phone number"
 USER_UPDATE_SUCCESS="user information successfully updated"
 
+
 COMPANY_EXISTS="company exists"
 COMPANY_ADDED_SUCCESS="company added successfully"
 INVALID_COMPANY_ATTRIBUTES="invalid company attributes"
@@ -18,6 +19,8 @@ TOKEN_EXPIRY_DAYS=30 # 30 days
 TOKEN_EXPIRED="token expired"
 INVALID_TOKEN="invalid token"
 VALID_TOKEN="valid token"
+
+SECRET='asfjoew@23r8wjfosdfn'
 
 HTTP_SUCCESS=200
 HTTP_UNAUTHORIZED=401

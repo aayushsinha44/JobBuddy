@@ -1,5 +1,7 @@
+from user.helper.Company import Company
 from user.models import CandidateModel, CandidateQualificationModel, CandidateWorkExperienceModel
-from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_DOESNOT_EXISTS
+from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_DOESNOT_EXISTS, \
+    COMPANY_DOESNOT_EXISTS, USER_UPDATE_SUCCESS
 from user.helper.helper import process_password
 
 
@@ -106,4 +108,42 @@ class Candidate:
 
     def update_details(self, details):
 
-        pass
+        if self.check_details_structure(details):
+
+            if self.check_candidate():
+
+                candidate_object = self.get_candidate_object()
+                candidate_object.first_name = details["first_name"]
+                candidate_object.last_name = details["last_name"]
+                candidate_object.location = details["location"]
+                candidate_object.cv = details["cv"]
+                candidate_object.save()
+
+                return USER_UPDATE_SUCCESS
+
+            else:
+                return USER_DOESNOT_EXISTS
+
+        else:
+            return INVALID_USER_ATTRIBUTES
+
+    def check_details_structure(self, details):
+        candidate_user_structure = ["first_name",
+                                    "last_name",
+                                    "email_id",
+                                    "user_id",
+                                    "type",
+                                    "location",
+                                    "cv"]
+        for val in candidate_user_structure:
+            if val not in details:
+                return False
+        return True
+
+    def check_candidate(self):
+        if CandidateModel.objects.filter(user_id=self.user_id).count() > 0:
+            return True
+        return False
+
+    def get_candidate_object(self):
+        return CandidateModel.objects.get(user_id=self.user_id)

@@ -1,6 +1,6 @@
 from user.models import FreelancerModel, FreelancerQualificationModel, CompanyModel
 from user.helper.constants import EMAIL_EXISTS, PHONE_NUMBER, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, USER_EXISTS, \
-                                    USER_DOESNOT_EXISTS, COMPANY_DOESNOT_EXISTS
+    USER_DOESNOT_EXISTS, COMPANY_DOESNOT_EXISTS, USER_UPDATE_SUCCESS
 from user.helper.helper import process_password
 from user.helper.Company import Company
 
@@ -12,7 +12,7 @@ class Freelancer:
         self.user_status = self.check_user_status()
 
     def check_user_status(self):
-        if Freelancer.objects.filter(user_id=self.user_id).count == 0:
+        if FreelancerModel.objects.filter(user_id=self.user_id).count == 0:
             return USER_DOESNOT_EXISTS
         return USER_EXISTS
 
@@ -115,4 +115,50 @@ class Freelancer:
 
     def update_details(self, details):
 
-        pass
+        if self.check_details_structure(details):
+
+            if self.check_freelancer():
+
+                company_object = Company(details["company"])
+
+                if not company_object.check_company():
+                    return COMPANY_DOESNOT_EXISTS
+
+                freelancer_object = self.get_freelancer_object()
+                freelancer_object.first_name = details["first_name"]
+                freelancer_object.last_name = details["last_name"]
+                freelancer_object.location = details["location"]
+                freelancer_object.company = company_object.get_company_object()
+                freelancer_object.pan = details["pan"]
+                freelancer_object.save()
+
+                return USER_UPDATE_SUCCESS
+
+            else:
+                return USER_DOESNOT_EXISTS
+
+        else:
+            return INVALID_USER_ATTRIBUTES
+
+    def check_details_structure(self, details):
+        freelancer_user_structure = ["first_name",
+                                     "last_name",
+                                     "email_id",
+                                     "user_id",
+                                     "type",
+                                     "location",
+                                     "pan",
+                                     "company"]
+
+        for val in freelancer_user_structure:
+            if val not in details:
+                return False
+        return True
+
+    def check_freelancer(self):
+        if FreelancerModel.objects.filter(user_id=self.user_id).count() > 0:
+            return True
+        return False
+
+    def get_freelancer_object(self):
+        return FreelancerModel.objects.get(user_id=self.user_id)

@@ -1,7 +1,8 @@
 from user.helper.helper import process_password
 from user.models import RecruiterModel, CompanyModel
 from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, COMPANY_DOESNOT_EXISTS, \
-    USER_DOESNOT_EXISTS
+    USER_DOESNOT_EXISTS, USER_UPDATE_SUCCESS
+from user.helper.Company import Company
 
 
 class Recruiter:
@@ -11,7 +12,7 @@ class Recruiter:
         self.user_status = self.check_user_status()
 
     def check_user_status(self):
-        if Recruiter.objects.filter(user_id=self.user_id).count == 0:
+        if RecruiterModel.objects.filter(user_id=self.user_id).count() == 0:
             return USER_DOESNOT_EXISTS
         return USER_EXISTS
 
@@ -114,8 +115,48 @@ class Recruiter:
 
     def update_details(self, details):
 
-        pass
+        if self.check_details_structure(details):
+
+            if self.check_recruiter():
+
+                company_object = Company(details["company"])
+
+                if not company_object.check_company():
+                    return COMPANY_DOESNOT_EXISTS
+
+                recruiter_object = self.get_recruiter_object()
+                recruiter_object.first_name = details["first_name"]
+                recruiter_object.last_name = details["last_name"]
+                recruiter_object.company = company_object.get_company_object()
+                recruiter_object.pan = details["pan"]
+                recruiter_object.save()
+
+                return USER_UPDATE_SUCCESS
+
+            else:
+                return USER_DOESNOT_EXISTS
+
+        else:
+            return INVALID_USER_ATTRIBUTES
 
     def check_details_structure(self, details):
+        recruiter_user_structure = ["first_name",
+                                    "last_name",
+                                    "email_id",
+                                    "user_id",
+                                    "type",
+                                    "company",
+                                    "pan"]
+        for val in recruiter_user_structure:
+            if val not in details:
+                return False
+        return True
 
-        passe
+    def check_recruiter(self):
+        # Check whether user exists or not
+        if RecruiterModel.objects.filter(user_id=self.user_id).count() > 0:
+            return True
+        return False
+
+    def get_recruiter_object(self):
+        return RecruiterModel.objects.get(user_id=self.user_id)

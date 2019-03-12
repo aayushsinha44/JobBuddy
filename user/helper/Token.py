@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from user.helper.constants import TOKEN_EXPIRY_DAYS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED, INVALID_USER_TYPE
+from user.helper.constants import TOKEN_EXPIRY_DAYS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED, INVALID_USER_TYPE, SECRET
 from user.helper.User import User
 import jwt
 import random

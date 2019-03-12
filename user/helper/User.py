@@ -8,7 +8,7 @@ from user.helper.helper import process_password
 
 class User:
 
-    def __init__(self, user_id=None, user_type=None):
+    def __init__(self, user_id, user_type):
         self._user_id = user_id
         self.user_type = user_type
 
@@ -157,7 +157,7 @@ class User:
 
     def update_details(self, details):
 
-        if not User.check_phone_number(self.user_type):
+        if not User.check_user_type(self.user_type):
             return INVALID_USER_TYPE
 
         if self.user_type == RECRUITER:
@@ -170,4 +170,10 @@ class User:
 
         elif self.user_type == CANDIDATE:
             candidate = Candidate(self._user_id)
-            return candidate.get_details(details)
+            return candidate.update_details(details)
+
+    @staticmethod
+    def check_user_type(user_type):
+        if user_type in [RECRUITER, CANDIDATE, FREELANCER]:
+            return True
+        return False

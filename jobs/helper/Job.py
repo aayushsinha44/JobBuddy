@@ -1,7 +1,9 @@
-from jobs.helper.constants import INVALID_JOB_STRUCTURE, INVALID_JOB_TYPE, JOB_ADDED_SUCCESS
-from user.helper.constants import COMPANY_DOESNOT_EXISTS
-from user.helper.Company import Company
+from jobs.helper.constants import INVALID_JOB_STRUCTURE, INVALID_JOB_TYPE, JOB_ADDED_SUCCESS, JOB_UPDATED_SUCCESS, \
+    JOB_DOESNOT_EXISTS
 from jobs.models import JobModel
+from user.helper.Company import Company
+from user.models import CompanyModel
+from user.helper.constants import COMPANY_DOESNOT_EXISTS
 
 
 class Job:
@@ -39,6 +41,39 @@ class Job:
         else:
             return INVALID_JOB_STRUCTURE
 
+    def update_job(self, job_structure):
+
+        if Job.check_job_structure(job_structure):
+
+            if not Job.check_job_type(job_structure["job_type"]):
+                return INVALID_JOB_TYPE
+
+            job_object = self.get_job_object()
+
+            company_object = Company(job_structure["company"])
+
+            if company_object.check_company() == COMPANY_DOESNOT_EXISTS:
+                return COMPANY_DOESNOT_EXISTS
+
+            job_object.company = company_object.get_company_object()
+            job_object.title = job_structure["job_title"]
+            job_object.job_type = job_structure["job_type"]
+            job_object.job_qualification = job_structure["job_qualification"]
+            job_object.job_location = job_structure["job_location"]
+            job_object.salary_range_min = job_structure["salary_range_min"]
+            job_object.salary_range_max = job_structure["salary_range_max"]
+            job_object.work_experience_min = job_structure["work_experience_min"]
+            job_object.work_experience_max = job_structure["work_experience_max"]
+            job_object.no_of_opening = job_structure["no_of_opening"]
+            job_object.job_description = job_structure["job_description"]
+
+            job_object.save()
+
+            return JOB_UPDATED_SUCCESS
+
+        else:
+            return INVALID_JOB_STRUCTURE
+
     @staticmethod
     def check_job_structure(job_structure):
         data_key = ["company", "job_title", "job_type", "job_qualification", "job_location", "salary_range_min",
@@ -56,3 +91,19 @@ class Job:
             if job_option[0] == job_type:
                 return True
         return False
+
+    def get_job_object(self):
+        return JobModel.objects.get(id=self.job_id)
+
+    def check_job(self):
+        if JobModel.objects.filter(id=self.job_id).count() > 0:
+            return True
+        return False
+
+    def get_job_details(self):
+        if not self.check_job():
+            return JOB_DOESNOT_EXISTS
+        basic = list(JobModel.objects.filter(id=self.job_id).values())[0]
+        basic["company"] = str(basic["company_id"])
+        del basic["company_id"]
+        return basic

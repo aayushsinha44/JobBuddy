@@ -1,11 +1,11 @@
 from django.test import TestCase
-from jobs.helper.constants import JOB_ADDED_SUCCESS, INVALID_JOB_TYPE, INVALID_JOB_STRUCTURE
+from jobs.helper.constants import JOB_ADDED_SUCCESS, INVALID_JOB_TYPE, INVALID_JOB_STRUCTURE, JOB_UPDATED_SUCCESS
 from user.models import CompanyModel
 from jobs.helper.Job import Job
 
 
 # Create your tests here.
-class RecruiterCreationTest(TestCase):
+class JobCreationTest(TestCase):
     def setUp(self):
         CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
         self.job_structure = {
@@ -56,3 +56,51 @@ class RecruiterCreationTest(TestCase):
         self.assertEqual(res, INVALID_JOB_TYPE)
 
 
+class JobUpdationTest(TestCase):
+    def setUp(self):
+        CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
+        self.job_structure = {
+            "company": "1",
+            "job_title": "SR Manager",
+            "job_type": "FT",
+            "job_qualification": "MBA Passout",
+            "job_location": "Mumbai",
+            "salary_range_min": None,
+            "salary_range_max": None,
+            "work_experience_min": None,
+            "work_experience_max": None,
+            "no_of_opening": None,
+            "job_description": "Manager"
+        }
+        Job.add_job(self.job_structure)
+
+    def test_job(self):
+        self.job_structure["id"]=1
+        job_object = Job(self.job_structure["id"])
+        res = job_object.update_job(self.job_structure)
+        self.assertEqual(res, JOB_UPDATED_SUCCESS)
+
+
+class JobGetTest(TestCase):
+    def setUp(self):
+        CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
+        self.job_structure = {
+            "company": "1",
+            "job_title": "SR Manager",
+            "job_type": "FT",
+            "job_qualification": "MBA Passout",
+            "job_location": "Mumbai",
+            "salary_range_min": None,
+            "salary_range_max": None,
+            "work_experience_min": None,
+            "work_experience_max": None,
+            "no_of_opening": None,
+            "job_description": "Manager"
+        }
+        Job.add_job(self.job_structure)
+        self.job_structure["id"] = 1
+
+    def test_job(self):
+        job_object = Job(self.job_structure["id"])
+        res = job_object.get_job_details()
+        self.assertEqual(res, self.job_structure)

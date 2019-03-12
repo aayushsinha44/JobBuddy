@@ -1,9 +1,9 @@
 from django.test import TestCase, Client
 from user.helper.Token import create_token, check_token, get_secret_key
-from user.helper.constants import USER_ADDED_SUCCESS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED
+from user.helper.constants import USER_ADDED_SUCCESS, VALID_TOKEN, INVALID_TOKEN, TOKEN_EXPIRED, USER_UPDATE_SUCCESS
 import jwt
 from user.helper.User import User
-from user.models import CompanyModel
+from user.models import CompanyModel, RecruiterModel
 
 
 class TokenCreationAndValidationTest(TestCase):
@@ -88,6 +88,81 @@ class FreelancerCreationTest(TestCase):
     def test_recruiter(self):
         res = User.createUser(self.user_structure)
         self.assertEqual(res, USER_ADDED_SUCCESS)
+
+
+class RecruiterUpdateTest(TestCase):
+    def setUp(self):
+        CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
+        self.user_structure = {
+            "first_name": "Aayush",
+            "last_name": "Sinha",
+            "email_id": "aayush@gmail.com",
+            "phone_number": "9876543210",
+            "password": "abc1234",
+            "type": "recruiter",
+            "company": "1",  # Company ID
+            "pan": "123"
+        }
+
+    def test_recruiter(self):
+        res = User.createUser(self.user_structure)
+        self.assertEqual(res, USER_ADDED_SUCCESS)
+        user_object = User(1, self.user_structure["type"])
+        self.user_structure["first_name"] = 'a'
+        self.user_structure["user_id"] = 1
+        del self.user_structure["password"]
+        res = user_object.update_details(self.user_structure)
+        self.assertEqual(res, USER_UPDATE_SUCCESS)
+
+
+class FreelancerUpdateTest(TestCase):
+    def setUp(self):
+        CompanyModel.objects.create(name="test1", sector="abc", website="abc", about="abc")
+        self.user_structure = {
+            "first_name": "Aayush",
+            "last_name": "Sinha",
+            "email_id": "aayush@gmail.com",
+            "phone_number": "9876543210",
+            "password": "abc1234",
+            "type": "freelancer",
+            "pan": "123",
+            "location": "",
+            "company": "1"
+        }
+
+    def test_recruiter(self):
+        res = User.createUser(self.user_structure)
+        self.assertEqual(res, USER_ADDED_SUCCESS)
+        user_object = User(1, self.user_structure["type"])
+        self.user_structure["first_name"] = 'a'
+        self.user_structure["user_id"] = 1
+        del self.user_structure["password"]
+        res = user_object.update_details(self.user_structure)
+        self.assertEqual(res, USER_UPDATE_SUCCESS)
+
+
+class CandidateUpdateTest(TestCase):
+    def setUp(self):
+        self.user_structure = {
+            "first_name": "Aayush",
+            "last_name": "Sinha",
+            "email_id": "aayush@gmail.com",
+            "phone_number": "9876543210",
+            "password": "abc1234",
+            "type": "candidate",
+            "location": "",
+            "cv": ""
+        }
+
+    def test_recruiter(self):
+        res = User.createUser(self.user_structure)
+        self.assertEqual(res, USER_ADDED_SUCCESS)
+        user_object = User(1, self.user_structure["type"])
+        self.user_structure["cv"] = 'abc'
+        self.user_structure["user_id"] = 1
+        del self.user_structure["password"]
+        res = user_object.update_details(self.user_structure)
+        self.assertEqual(res, USER_UPDATE_SUCCESS)
 
 # TODO login test
 # TODO create user login
