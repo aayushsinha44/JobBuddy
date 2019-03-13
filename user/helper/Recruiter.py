@@ -184,3 +184,10 @@ class Recruiter:
         pages = JobModel.objects.filter(recruiter=recruiter_object).count()
 
         return pages
+
+    def has_recruiter_posted_job(self, job_id):
+        recruiter_object = self.get_recruiter_object()
+
+        if JobModel.objects.filter(recruiter=recruiter_object).count > 0:
+            return True
+        return False

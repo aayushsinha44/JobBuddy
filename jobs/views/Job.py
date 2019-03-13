@@ -1,4 +1,7 @@
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
+
+from user.helper.Recruiter import Recruiter
+from user.helper.Token import Token
 from user.helper.decorator import recruiter_login_required
 from jobs.helper.constants import JOB_ADDED_SUCCESS, INVALID_JOB_STRUCTURE, JOB_UPDATED_SUCCESS, JOB_DOESNOT_EXISTS
 from jobs.helper.Job import Job
@@ -34,6 +37,18 @@ def add_job(request):
     elif request.method == 'PUT':
 
         try:
+
+            token = Token(request)
+            user_id = token.get_user_id()
+            user_type = token.get_user_type()
+
+            recruiter = Recruiter(user_id=user_id)
+
+            if not recruiter.has_recruiter_posted_job():
+                return HttpResponseBadRequest(json.dumps({
+                    'message': 'invalid access'
+                }), content_type='application/json')
+
             job_structure = json.loads(request.body.decode())
 
             if "id" not in job_structure:
