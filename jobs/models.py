@@ -1,5 +1,5 @@
 from django.db import models
-from user.models import FreelancerModel, CompanyModel, CandidateModel
+from user.models import FreelancerModel, CompanyModel, CandidateModel, RecruiterModel
 
 
 # Create your models here.
@@ -12,6 +12,7 @@ class JobModel(models.Model):
         ('CN', 'Contract')
     )
 
+    recruiter = models.ForeignKey(RecruiterModel, on_delete=models.CASCADE)
     company = models.ForeignKey(CompanyModel, on_delete=models.CASCADE)
     job_title = models.CharField(max_length=100)
     job_type = models.CharField(max_length=100, choices=JOB_OPTIONS)

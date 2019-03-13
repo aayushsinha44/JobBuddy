@@ -2,8 +2,9 @@ from jobs.helper.constants import INVALID_JOB_STRUCTURE, INVALID_JOB_TYPE, JOB_A
     JOB_DOESNOT_EXISTS
 from jobs.models import JobModel
 from user.helper.Company import Company
+from user.helper.Recruiter import Recruiter
 from user.models import CompanyModel
-from user.helper.constants import COMPANY_DOESNOT_EXISTS
+from user.helper.constants import COMPANY_DOESNOT_EXISTS, USER_DOESNOT_EXISTS
 
 
 class Job:
@@ -20,11 +21,16 @@ class Job:
                 return INVALID_JOB_TYPE
 
             company_object = Company(job_structure["company"])
+            recruiter_object = Recruiter(job_structure["recruiter"])
 
             if company_object.check_company() == COMPANY_DOESNOT_EXISTS:
                 return COMPANY_DOESNOT_EXISTS
 
-            JobModel.objects.create(company= company_object.get_company_object(),
+            if recruiter_object.check_user_status() == USER_DOESNOT_EXISTS:
+                return USER_DOESNOT_EXISTS
+
+            JobModel.objects.create(recruiter=recruiter_object.get_recruiter_object(),
+                                    company= company_object.get_company_object(),
                                     job_title=job_structure["job_title"],
                                     job_type=job_structure["job_type"],
                                     job_qualification=job_structure["job_qualification"],
@@ -78,7 +84,7 @@ class Job:
     def check_job_structure(job_structure):
         data_key = ["company", "job_title", "job_type", "job_qualification", "job_location", "salary_range_min",
                     "salary_range_max", "work_experience_min", "work_experience_max", "no_of_opening",
-                    "job_description"]
+                    "job_description", "recruiter"]
 
         for key in data_key:
             if key not in job_structure:
@@ -106,4 +112,6 @@ class Job:
         basic = list(JobModel.objects.filter(id=self.job_id).values())[0]
         basic["company"] = str(basic["company_id"])
         del basic["company_id"]
+        basic["recruiter"] = int(basic["recruiter_id"])
+        del basic["recruiter_id"]
         return basic

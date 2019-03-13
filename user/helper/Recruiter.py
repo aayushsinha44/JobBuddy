@@ -1,8 +1,9 @@
 from user.helper.helper import process_password
 from user.models import RecruiterModel, CompanyModel
 from user.helper.constants import USER_EXISTS, INVALID_USER_ATTRIBUTES, USER_ADDED_SUCCESS, COMPANY_DOESNOT_EXISTS, \
-    USER_DOESNOT_EXISTS, USER_UPDATE_SUCCESS
+    USER_DOESNOT_EXISTS, USER_UPDATE_SUCCESS, INVALID_PAGE, JOB_PAGE_SIZE
 from user.helper.Company import Company
+from jobs.models import JobModel
 
 
 class Recruiter:
@@ -160,3 +161,26 @@ class Recruiter:
 
     def get_recruiter_object(self):
         return RecruiterModel.objects.get(user_id=self.user_id)
+
+    def all_jobs_by_recruiter(self, page_number):
+
+        pages = self.get_page_count_for_all_jobs()
+        recruiter_object = self.get_recruiter_object()
+
+        if page_number > pages:
+            return INVALID_PAGE
+
+        low = (page_number-1)*JOB_PAGE_SIZE
+        high = page_number*JOB_PAGE_SIZE
+
+        if pages == page_number:
+            return JobModel.objects.filter(recruiter=recruiter_object).values()[low:]
+
+        return JobModel.objects.filter(recruiter=recruiter_object).values()[low:high]
+
+    def get_page_count_for_all_jobs(self):
+        recruiter_object = self.get_recruiter_object()
+
+        pages = JobModel.objects.filter(recruiter=recruiter_object).count()
+
+        return pages
