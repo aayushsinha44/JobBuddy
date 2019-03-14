@@ -1,6 +1,6 @@
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseServerError
-from user.helper.User import  User
-from user.helper.Company import  Company
+from user.helper.User import User
+from user.helper.Company import Company
 from user.helper.constants import COMPANY_ADDED_SUCCESS, USER_ADDED_SUCCESS, INVALID_ATTRIBUTES, INVALID_PAGE
 from user.helper.Token import create_token, Token
 import json
@@ -9,7 +9,6 @@ from user.helper.Recruiter import Recruiter
 
 
 def register_company(request):
-
     if request.method == 'POST':
 
         try:
@@ -40,8 +39,7 @@ def register_company(request):
         }), content_type='application/json')
 
 
-def get_company(request):
-
+def get_company_autocomplete(request):
     if request.method == 'GET':
 
         try:
@@ -50,7 +48,7 @@ def get_company(request):
 
             if "start_with" in start_with:
                 return HttpResponse(json.dumps({
-                    'data' : Company.get_company_list(start_with["start_name"])
+                    'data': Company.get_company_list(start_with["start_name"])
                 }), content_type='application/json')
 
             else:
@@ -70,7 +68,6 @@ def get_company(request):
 
 
 def get_job_by_company(request):
-
     if request.method == 'GET':
 
         try:
@@ -109,7 +106,6 @@ def get_job_by_company(request):
 
 @recruiter_login_required
 def get_job_by_recruiter(request):
-
     if request.method == 'GET':
 
         try:

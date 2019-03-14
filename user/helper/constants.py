@@ -8,6 +8,7 @@ USER_DOESNOT_EXISTS: str="User doesnot exists"
 INVALID_ATTRIBUTES: str="invalid attributes"
 INVALID_PHONE_NUMBER="invalid phone number"
 USER_UPDATE_SUCCESS="user information successfully updated"
+INVALID_COMPANY_SECTOR="invalid company sector"
 
 
 COMPANY_EXISTS="company exists"

@@ -1,7 +1,7 @@
 import math
 from user.models import CompanyModel
 from user.helper.constants import COMPANY_EXISTS, COMPANY_ADDED_SUCCESS, INVALID_COMPANY_ATTRIBUTES, \
-    COMPANY_DOESNOT_EXISTS, JOB_PAGE_SIZE, INVALID_PAGE
+    COMPANY_DOESNOT_EXISTS, JOB_PAGE_SIZE, INVALID_PAGE, INVALID_COMPANY_SECTOR
 from jobs.models import JobModel
 
 
@@ -34,7 +34,7 @@ class Company:
             return COMPANY_EXISTS
 
         if company_structure["sector"] not in Company.SECTOR:
-            return INVALID_COMPANY_ATTRIBUTES
+            return INVALID_COMPANY_SECTOR
 
         CompanyModel.objects.create(name=company_structure["name"],
                                     sector=company_structure["sector"],
