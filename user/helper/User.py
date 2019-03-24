@@ -82,15 +82,15 @@ class User:
             password = process_password(login_structure["password"])
 
             if login_structure["type"] == RECRUITER:
-                return Recruiter.check_recruiter(phone_number=email_id,
+                return Recruiter.check_recruiter_email(email_id=email_id,
                                                  password=password)
 
             elif login_structure["type"] == FREELANCER:
-                return Freelancer.check_freelancer(phone_number=email_id,
+                return Freelancer.check_freelancer(email_id=email_id,
                                                    password=password)
 
             elif login_structure["type"] == CANDIDATE:
-                return Candidate.check_candidate(phone_number=email_id,
+                return Candidate.check_candidate_email(email_id=email_id,
                                                  password=password)
 
         elif "phone_number" in login_structure:
@@ -99,7 +99,7 @@ class User:
             password = process_password(login_structure["password"])
 
             if login_structure["type"] == RECRUITER:
-                return Recruiter.check_recruiter(phone_number=phone_number,
+                return Recruiter.check_recruiter_phone(phone_number=phone_number,
                                                  password=password)
 
             elif login_structure["type"] == FREELANCER:
@@ -107,7 +107,7 @@ class User:
                                                    password=password)
 
             elif login_structure["type"] == CANDIDATE:
-                return Candidate.check_candidate(phone_number=phone_number,
+                return Candidate.check_candidate_phone(phone_number=phone_number,
                                                  password=password)
 
     @staticmethod

@@ -67,7 +67,7 @@ class Candidate:
         return True
 
     @staticmethod
-    def check_candidate(email_id=None, password=None):
+    def check_candidate_email(email_id=None, password=None):
 
         print('email')
         if CandidateModel.objects.filter(email_id=email_id,
@@ -76,7 +76,7 @@ class Candidate:
         return USER_DOESNOT_EXISTS
 
     @staticmethod
-    def check_candidate(phone_number=None, password=None):
+    def check_candidate_phone(phone_number=None, password=None):
 
         if CandidateModel.objects.filter(phone_number=phone_number,
                                          password=password).count() > 0:

@@ -79,7 +79,7 @@ class Recruiter:
         return True
 
     @staticmethod
-    def check_recruiter(email_id=None, password=None):
+    def check_recruiter_email(email_id=None, password=None):
 
         if RecruiterModel.objects.filter(email_id=email_id,
                                          password=password).count() > 0:
@@ -87,7 +87,7 @@ class Recruiter:
         return USER_DOESNOT_EXISTS
 
     @staticmethod
-    def check_recruiter(phone_number=None, password=None):
+    def check_recruiter_phone(phone_number=None, password=None):
 
         if RecruiterModel.objects.filter(phone_number=phone_number,
                                          password=password).count() > 0:

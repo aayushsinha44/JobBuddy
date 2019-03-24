@@ -10,6 +10,7 @@ def register(request):
 
     if request.method == 'POST':
         try:
+            print(request.body.decode())
             user_structure = json.loads(request.body.decode())
 
             res = User.createUser(user_structure)
@@ -24,12 +25,13 @@ def register(request):
                 }), content_type='application/json')
 
             else:
-
+                print(res)
                 return HttpResponseBadRequest(json.dumps({
                     "message": res
                 }), content_type='application/json')
 
         except Exception as e:
+            print(str(e))
             return HttpResponseServerError(json.dumps({
                 'message': str(e)
             }), content_type='application/json')
